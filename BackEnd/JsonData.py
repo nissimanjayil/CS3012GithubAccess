@@ -6,38 +6,74 @@ base_url= 'https://api.github.com'
 
 
 
-#This function parses the commits from JSON data returned from the API request
-def get_commit(username,repo):
+#This function makes a get request to the github API and returns a JSON data
+def get_request(username,repo):
     url = '{}/repos/{}/{}/commits'.format(base_url,username,repo)
     response = requests.get(url)
     print(response.status_code)
     if response.status_code == 200:
         print("Connection successful.Decoding JSON")
     json_data = response.json()
-    json_commit = json_data[0]['commit']
-   
-    return json_commit
+    return json_data
+
+
+
+#The JSON data returned this function parses just the commit fields and returns a dict
+def parse_data(request):
+    filtered_commits = {}
+    i=0
+    j=0
+    for  k in request:
+        filtered_commits[j] = request[i]['commit']
+        i = i + 1
+        j = j + 1
+    return filtered_commits
     
-    
-# url = base_url
-# json_data = requests.get(url).json()
-# json_commit = json_data[0]['commit']
-# print(json_commit)
     
 
 def main():
     username = 'torvalds'
     repo = 'Linux'
    
-    data = get_commit(username,repo)
-    print(data)
-      
+    request = get_request(username,repo)
+    data =parse_data(request)
    
-    # field_names =[array1,
-
+    i=0
+    for i in data:   
+        print(data[i])
+        i = i+1
+       
+     
+    # author = ['name',
+    #           'email',
+    #           'date'
     # ]
 
-    # output_file = open('csv_file.csv',"w")
+    # committer =['name',
+    #           'email',
+    #           'date'
+    # ]
+
+    # tree =['sha',
+    #        'url'
+    # ]
+
+    # verification =['verified',
+    #                 'reason',
+    #                 'signature',
+    #                 'payload'
+    # ]
+
+    # field_names =[author,
+    #              committer,
+    #              'message',
+    #              tree,
+    #              'url',
+    #              'comment_count',
+    #              verification
+    # ]
+
+    # output_file = open('commit.csv',"w")
     # output = csv.DictWriter(output_file,
     #             fieldnames=field_names,
     #             restval=None,
