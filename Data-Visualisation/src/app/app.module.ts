@@ -3,14 +3,16 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { RequestComponent } from './request/request.component';
 import { HttpClientModule } from '@angular/common/http';
+import { BarchartComponent } from './barchart/barchart.component';
+
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    RequestComponent
+    BarchartComponent
+
   ],
   imports: [
     BrowserModule,
