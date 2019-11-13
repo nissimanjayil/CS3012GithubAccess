@@ -4,14 +4,16 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
-import { BarchartComponent } from './barchart/barchart.component';
+import { RequestComponent } from './request/request.component';
+import { ScatterPlotComponent } from './scatter-plot/scatter-plot.component';
 
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    BarchartComponent
+    RequestComponent,
+    ScatterPlotComponent
 
   ],
   imports: [
