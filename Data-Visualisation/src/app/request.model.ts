@@ -1,5 +1,5 @@
 export interface requestModel {
-    week: number;
-    participation :number
+    Week: number;
+    Commit :number
   }
 
