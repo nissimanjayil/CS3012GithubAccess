@@ -1,97 +1,53 @@
-import {  Component, ElementRef, ViewChild, OnInit, Input   } from '@angular/core';
-import * as d3 from 'd3';
-import { DataService } from '../data.service';
-import { requestModel } from '../request.model';
-import { ExportcsvService } from '../exportcsv.service';
+import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-@Component({
-  selector: 'app-scatter-plot',
-  templateUrl: './scatter-plot.component.html',
-  styleUrls: ['./scatter-plot.component.css']
+@Injectable({
+  providedIn: 'root'
 })
-export class ScatterPlotComponent implements OnInit {
-  
+export class ExportcsvService {
 
-  
-  private htmlElement:HTMLElement;
-  allCommits:Array<Object>=[];
-  ownerCommits:Array<Object>=[];
-  participation = Array<requestModel>();
-  
- 
-  constructor(elementRef:ElementRef,
-    private dataservice:DataService,
-    private httpClient:HttpClient,
-    private display:ExportcsvService) {
-     }
-  
-    
- 
-     public var Weeks =[];
-     public var CommitsAll=[];
-     public var aCommits=[]; 
-  ngOnInit() {
+constructor(private http: HttpClient){}
+  static exportToCsv(filename: string, rows: object[]) {
+    if (!rows || !rows.length) {
+      return;
+    }
+    const separator = ',';
+    const keys = Object.keys(rows[0]);
+    const csvContent =
+      keys.join(separator) +
+      '\n' +
+      rows.map(row => {
+        return keys.map(k => {
+          let cell = row[k] === null || row[k] === undefined ? '' : row[k];
+          cell = cell instanceof Date
+            ? cell.toLocaleString()
+            : cell.toString().replace(/"/g, '""');
+          if (cell.search(/("|,|\n)/g) >= 0) {
+            cell = `"${cell}"`;
+          }
+          return cell;
+        }).join(separator);
+      }).join('\n');
 
-  
-    
-    this.dataservice.getRemoteData().subscribe((datta:Array<Object>)=>{
-      var i = datta['all'].length;
-
-      //Pushes all the userCommits into the array allUser.
-      var j=0;
-      var k=0;
-      while(j<i){
-        this.allCommits[j] = datta['all'][k];
-        j++;
-        k++;
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    if (navigator.msSaveBlob) { // IE 10+
+      navigator.msSaveBlob(blob, filename);
+    } else {
+      const link = document.createElement('a');
+      if (link.download !== undefined) {
+        // Browsers that support HTML5 download attribute
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
+    }
+  }
 
-
-      //Pushes all the ownerCommits into the array ownerCommits
-
-      var n = datta['owner'].length;
-      var c =0;
-      var d =0;
-      while(c < n){
-        this.ownerCommits[c] = datta['owner'][d];
-        c++;
-        d++;
-      }
-      var c=0;
-      var d =0;
-        
-      var reformattedArray = this.allCommits.map(obj =>{ 
-      
-        const mapping = [null,'Week', 'Commit']; 
-        aCommits.push({"Week":c,"Commit":this.allCommits[c]});
-      
-        c++;
-      });
-
-     
-      var count  =0;
-      
-      while(count < aCommits.length){
-        Weeks[count] = aCommits[count]['Week']
-        count++;
-      }
-      console.log(Weeks)
-
-      
-      var l=0;
-      while(l<aCommits.length){
-        CommitsAll[l] = aCommits[l]['Commit']
-      }
-  
-    
-     
-
-
-  
-
-   
-    });
-    this.httpClient.get('assets/test.csv', {responseType: 'text'}).subscribe(
+  getData(){
+    this.http.get('assets/test.csv', {responseType: 'text'}).subscribe(
       data => { 
           // set the dimensions and margins of the graph
       var margin = {top: 10, right: 20, bottom: 20, left: 50},
@@ -159,17 +115,17 @@ svg.append("g")
   .range([ "#F8766D", "#00BA38", "#619CFF"])
         svg.append('g')
   .selectAll("dot")
-  .data(aCommits)
+  .data(data)
   .enter()
   .append("circle")
-    .attr("cx", function (d) { return x(aCommits['Week']); } )
+    .attr("cx", function (d) { return x(d.Week); } )
     .attr("cy", function (d) { return y(d.Commit); } )
     .attr("r", 5)
-    // .style("fill", function (d) { return color(d.Species) } )
+    .style("fill", function (d) { return color(d.Species) } )
     
 
-
-    
+   
+    }
 
 
       },
@@ -179,9 +135,6 @@ svg.append("g")
       
       
   );
-
-};
-
-
+  }
 }
 
