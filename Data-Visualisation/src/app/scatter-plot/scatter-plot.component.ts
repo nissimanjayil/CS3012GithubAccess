@@ -51,15 +51,7 @@ export class ScatterPlotComponent implements OnInit {
       .attr("width", width)
       .style("fill", "EBEBEB")
 
-      
-      
-    this.httpClient.get('assets/test.csv', {responseType: 'text'}).subscribe(
-      data => { 
-        // let csvRecord: requestModel = new requestModel();
-        // csvRecord.Week= data;
-        // console.log(csvRecord)
-
-          // Add X axis
+        // Add X axis
       var x = d3.scaleLinear()
       .domain([20*0.25, 52*1.001])
       .range([ 0, width ])
@@ -68,8 +60,7 @@ export class ScatterPlotComponent implements OnInit {
       .call(d3.axisBottom(x).tickSize(-height*1.7).ticks(10))
       .select(".domain").remove()
 
-
-       // Add Y axis
+      // Add Y axis
       var y = d3.scaleLinear()
       .domain([-0.001, 2000*1.01])
       .range([ height, 0])
@@ -78,7 +69,9 @@ export class ScatterPlotComponent implements OnInit {
      .call(d3.axisLeft(y).tickSize(-width*1.3).ticks(7))
      .select(".domain").remove()
 
-    // Customization
+    
+     this.httpClient.get('assets/test.csv', { responseType: 'text' }).subscribe(data => {
+         // Customization
   svg.selectAll(".tick line").attr("stroke", "white")
 
   // Add X axis label:
@@ -88,19 +81,44 @@ export class ScatterPlotComponent implements OnInit {
       .attr("y", height + margin.top+14 )
       .text("Weeks");
 
-  // Y axis label:
+       // Y axis label:
   svg.append("text")
       .attr("text-anchor", "end")
       .attr("transform", "rotate(-90)")
       .attr("y", -margin.left + 20)
       .attr("x", -margin.top - height/2 + 20)
       .text("Weekly Commits")
-
+  // Color scale: give me a specie name, I return a color
+  var color = d3.scaleOrdinal()
+    .domain(["setosa", "versicolor", "virginica" ])
+    .range([ "#F8766D", "#00BA38", "#619CFF"])
+      var objs = d3.csvParse(data);
+     
+       let csvRecord:requestModel = new requestModel();
         
+       var count =0;
+       
+       while(count < objs.length){
+       csvRecord.Week = objs[count]['Week'];
+       csvRecord.Commit=objs[count]['Commit'];
+       // Add dots
+  svg.append('g')
+  .selectAll("dot")
+  .data(objs)
+  .enter()
+  .append("circle")
+    .attr("cx", function (d) { return x( csvRecord.Week); } )
+    .attr("cy", function (d) { return y(csvRecord.Commit); } )
+    .attr("r", 5)
+    // .style("fill", function (d) { return color(d.Species) } )
+       count ++;
+       }
+       
 
-      }
-    );
-
+   });
+  
+    
+  
 
 }
   

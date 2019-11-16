@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { DataService } from '../data.service';
-import { requestModel } from '../request.model';
 import { ExportcsvService } from '../exportcsv.service';
 import {HttpClient} from '@angular/common/http';
 
@@ -14,8 +13,7 @@ export class RequestComponent implements OnInit {
   private htmlElement:HTMLElement;
   allCommits:Array<Object>=[];
   ownerCommits:Array<Object>=[];
-  participation = Array<requestModel>();
-
+  
 
   constructor(private dataservice:DataService,
     private httpClient:HttpClient,

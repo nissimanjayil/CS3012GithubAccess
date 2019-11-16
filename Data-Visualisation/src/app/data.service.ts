@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import { requestModel } from './request.model';
+
 import { Observable } from 'rxjs';
 import { map } from 'd3';
 
