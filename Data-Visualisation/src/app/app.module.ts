@@ -5,13 +5,15 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ScatterPlotComponent } from './scatter-plot/scatter-plot.component';
+import { RequestComponent } from './request/request.component';
 
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    ScatterPlotComponent
+    ScatterPlotComponent,
+    RequestComponent
 
   ],
   imports: [
