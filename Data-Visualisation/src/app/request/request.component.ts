@@ -24,14 +24,15 @@ export class RequestComponent implements OnInit {
       var Weeks =[];
       var CommitsAll=[];
       var aCommits=[]; 
-     this.dataservice.getRemoteData().subscribe((datta:Array<Object>)=>{
-       var i = datta['all'].length;
+      var oCommits=[];
+     this.dataservice.getRemoteData().subscribe((data:Array<Object>)=>{
+       var i = data['all'].length;
  
        //Pushes all the userCommits into the array allUser.
        var j=0;
        var k=0;
        while(j<i){
-         this.allCommits[j] = datta['all'][k];
+         this.allCommits[j] = data['all'][k];
          j++;
          k++;
        }
@@ -39,11 +40,11 @@ export class RequestComponent implements OnInit {
  
        //Pushes all the ownerCommits into the array ownerCommits
  
-       var n = datta['owner'].length;
+       var n = data['owner'].length;
        var c =0;
        var d =0;
        while(c < n){
-         this.ownerCommits[c] = datta['owner'][d];
+         this.ownerCommits[c] = data['owner'][d];
          c++;
          d++;
        }
@@ -54,25 +55,18 @@ export class RequestComponent implements OnInit {
        
          const mapping = [null,'Week', 'Commit']; 
          aCommits.push({"Week":c,"Commit":this.allCommits[c]});
-       
+         oCommits.push({"Week":c,"Commit":this.ownerCommits[c]})
          c++;
        });
+       console.log(oCommits)
+
+       this.display.exportToCsv('Owner.csv',oCommits)
+     
  
       
-       var count  =0;
        
-       while(count < aCommits.length){
-         Weeks[count] = aCommits[count]['Week']
-         count++;
-       }
-       console.log(Weeks)
- 
+    
        
-       var l=0;
-       while(l<aCommits.length){
-         CommitsAll[l] = aCommits[l]['Commit']
-       }
-   
      });
   }
 

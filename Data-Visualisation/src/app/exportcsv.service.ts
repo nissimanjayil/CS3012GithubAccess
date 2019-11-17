@@ -6,7 +6,7 @@ import {HttpClient} from '@angular/common/http';
 export class ExportcsvService {
 
 constructor(private http: HttpClient){}
-  static exportToCsv(filename: string, rows: object[]) {
+  public exportToCsv(filename: string, rows: object[]) {
     if (!rows || !rows.length) {
       return;
     }
@@ -46,8 +46,6 @@ constructor(private http: HttpClient){}
     }
   }
 
-  getData(){
-    
-  }
+ 
 }
 

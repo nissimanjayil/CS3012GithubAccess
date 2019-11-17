@@ -19,18 +19,12 @@ export class ScatterPlotComponent implements OnInit {
     private display:ExportcsvService) {
      }
   
-    
- 
-  
-  
- 
- 
   ngOnInit() {
 
     
       // set the dimensions and margins of the graph
       var margin = {top: 5, right: 20, bottom: 20, left: 50},
-      width = 1250 - margin.left - margin.right,
+      width = 1300 - margin.left - margin.right,
       height = 605 - margin.top - margin.bottom;
 
         // append the svg object to the body of the page
@@ -53,7 +47,7 @@ export class ScatterPlotComponent implements OnInit {
 
         // Add X axis
       var x = d3.scaleLinear()
-      .domain([20*0.25, 52*1.001])
+      .domain([15*0.25, 52*1.001])
       .range([ 0, width ])
       svg.append("g")
       .attr("transform", "translate(0," + height + ")")
@@ -62,36 +56,35 @@ export class ScatterPlotComponent implements OnInit {
 
       // Add Y axis
       var y = d3.scaleLinear()
-      .domain([-0.001, 2000*1.01])
+      .domain([0, 2000*1.01])
       .range([ height, 0])
       .nice()
       svg.append("g")
      .call(d3.axisLeft(y).tickSize(-width*1.3).ticks(7))
      .select(".domain").remove()
+      // Customization
+     svg.selectAll(".tick line").attr("stroke", "white")
 
-    
-     this.httpClient.get('assets/test.csv', { responseType: 'text' }).subscribe(data => {
-         // Customization
-  svg.selectAll(".tick line").attr("stroke", "white")
+      // Add X axis label:
+      svg.append("text")
+          .attr("text-anchor", "end")
+          .attr("x", width/2 + 20)
+          .attr("y", height + margin.top+14 )
+          .text("Weeks");
 
-  // Add X axis label:
-  svg.append("text")
-      .attr("text-anchor", "end")
-      .attr("x", width/2 + 20)
-      .attr("y", height + margin.top+14 )
-      .text("Weeks");
-
-       // Y axis label:
-  svg.append("text")
+             // Y axis label:
+      svg.append("text")
       .attr("text-anchor", "end")
       .attr("transform", "rotate(-90)")
       .attr("y", -margin.left + 20)
       .attr("x", -margin.top - height/2 + 20)
       .text("Weekly Commits")
-  // Color scale: give me a specie name, I return a color
-  var color = d3.scaleOrdinal()
-    .domain(["setosa", "versicolor", "virginica" ])
-    .range([ "#F8766D", "#00BA38", "#619CFF"])
+      // Color scale: give me a specie name, I return a color
+      var color = d3.scaleOrdinal()
+      .domain(["setosa", "versicolor", "virginica" ])
+      .range([ "#F8766D", "#00BA38", "#619CFF"])
+    
+     this.httpClient.get('assets/test.csv', { responseType: 'text' }).subscribe(data => {
       var objs = d3.csvParse(data);
      
        let csvRecord:requestModel = new requestModel();
@@ -102,20 +95,42 @@ export class ScatterPlotComponent implements OnInit {
        csvRecord.Week = objs[count]['Week'];
        csvRecord.Commit=objs[count]['Commit'];
        // Add dots
-  svg.append('g')
-  .selectAll("dot")
-  .data(objs)
-  .enter()
-  .append("circle")
-    .attr("cx", function (d) { return x( csvRecord.Week); } )
-    .attr("cy", function (d) { return y(csvRecord.Commit); } )
-    .attr("r", 5)
-    // .style("fill", function (d) { return color(d.Species) } )
-       count ++;
+        svg.append('g')
+        .selectAll("dot")
+        .data(objs)
+        .enter()
+        .append("circle")
+          .attr("cx", function (d) { return x( csvRecord.Week); } )
+          .attr("cy", function (d) { return y(csvRecord.Commit); } )
+          .attr("r", 5)
+          .style("fill", "#69b3a2")
+            count ++;
        }
-       
+      });
 
-   });
+      this.httpClient.get('assets/Owner.csv', { responseType: 'text' }).subscribe(data => {
+        var objs = d3.csvParse(data);
+       
+         let csvRecord:requestModel = new requestModel();
+          
+         var count =0;
+         
+         while(count < objs.length){
+         csvRecord.Week = objs[count]['Week'];
+         csvRecord.Commit=objs[count]['Commit'];
+         // Add dots
+          svg.append('g')
+          .selectAll("dot")
+          .data(objs)
+          .enter()
+          .append("circle")
+            .attr("cx", function (d) { return x( csvRecord.Week); } )
+            .attr("cy", function (d) { return y(csvRecord.Commit); } )
+            .attr("r", 5)
+            .style("fill", "#FF6666")
+              count ++;
+         }
+        });
   
     
   
