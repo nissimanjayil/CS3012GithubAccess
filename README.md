@@ -21,5 +21,5 @@ Provide a visualisation of this using the d3js library. See https://d3js.org
 
 -For this part I moved the project to Typescript and Angular platform.
 
-
+![alt text](https://raw.githubusercontent.com/nissimanjayil/CS3012GithubAccess/master/LinuxCommits.png)
 
